@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = 'zoople-devops-workshop-vijin:latest'
         CONTAINER_NAME = 'vijin-app'
         APP_PORT = '3000'
+        DOMAIN = 'workshop.zoople.in'
         NGINX_DIR = '/home/ubuntu/nginx'
     }
 
@@ -43,10 +44,14 @@ pipeline {
         stage('Setup Nginx') {
             steps {
                 sh '''
-                cd 
-                pwd
-                cd $NGINX_DIR 
-                ./nginx.sh $DOMAIN $CONTAINER_NAME $APP_PORT
+                echo "Current user:"
+                whoami
+
+                echo "Checking nginx directory..."
+                sudo test -d $NGINX_DIR
+
+                echo "Running nginx script..."
+                sudo bash -c "cd $NGINX_DIR && chmod +x nginx.sh && ./nginx.sh $DOMAIN $CONTAINER_NAME $APP_PORT"
                 '''
             }
         }
